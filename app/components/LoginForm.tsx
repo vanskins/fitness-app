@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react"
+import { Form, Link } from "@remix-run/react"
 
 const LoginForm = () => {
 
@@ -28,12 +28,7 @@ const LoginForm = () => {
           </div>
           <div className="flex flex-row justify-end">
             <button
-              className="bg-green-400 text-white font-medium p-2 rounded-md w-24 m-2"
-              type="submit"
-            >
-              Sign up
-            </button>
-            <button
+              name="login"
               className="bg-blue-400 text-white font-medium p-2 rounded-md w-20 m-2"
               type="submit"
             >
@@ -42,6 +37,9 @@ const LoginForm = () => {
           </div>
         </div>
       </Form>
+      <div className="text-center">
+        <p className="font-medium">Not a member? <Link to="register" className="text-blue-500">Sign up now</Link></p>
+      </div>
     </div>
   )
 }

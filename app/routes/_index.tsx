@@ -2,9 +2,9 @@ import LoginForm from '~/components/LoginForm'
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 
-export const action = async ({
-  request,
-}: ActionFunctionArgs) => {
+export const action = async (props: ActionFunctionArgs) => {
+  const { request } = props;
+  console.log(props)
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
   console.log(updates, 'UPDATES')
