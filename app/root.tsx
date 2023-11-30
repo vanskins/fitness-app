@@ -4,7 +4,8 @@ import {
   Meta,
   Outlet,
   Scripts,
-  LiveReload
+  LiveReload,
+  ScrollRestoration
 } from "@remix-run/react";
 import stylesheet from "./global.css";
 import Navbar from "~/components/Navbar";
@@ -25,8 +26,11 @@ export default function App() {
       </head>
       <body>
         <Navbar />
-        <Outlet />
+        <div className="container mx-auto">
+          <Outlet />
+        </div>
         <Scripts />
+        <ScrollRestoration />
         <LiveReload />
       </body>
     </html>

@@ -7,8 +7,8 @@ const Navbar = () => {
           <h1 className="cursor-pointer font-bold text-2xl">FITNESS PLATFORM</h1>
           <div>
             <ul className="flex flex-row">
-              <li className="font-semibold mx-2 text-lg cursor-pointer">Projects</li>
-              <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li>
+              {/* <li className="font-semibold mx-2 text-lg cursor-pointer">Projects</li>
+              <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li> */}
             </ul>
           </div>
         </div>
