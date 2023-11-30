@@ -1,9 +1,16 @@
+import { LinksFunction } from "@remix-run/node";
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
+  LiveReload
 } from "@remix-run/react";
+import stylesheet from "./global.css";
+import Navbar from "~/components/Navbar";
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: stylesheet },
+];
 
 export default function App() {
   return (
@@ -17,10 +24,10 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <h1>Hello world!</h1>
+        <Navbar />
         <Outlet />
-
         <Scripts />
+        <LiveReload />
       </body>
     </html>
   );
