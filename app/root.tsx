@@ -25,8 +25,8 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <Navbar />
         <div className="container mx-auto">
+          <Navbar />
           <Outlet />
         </div>
         <Scripts />

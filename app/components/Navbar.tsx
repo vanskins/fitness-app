@@ -11,8 +11,12 @@ const Navbar = () => {
           </Link>
           <div>
             <ul className="flex flex-row">
-              {/* <li className="font-semibold mx-2 text-lg cursor-pointer">Projects</li>
-              <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li> */}
+              <Link to="/profile">
+                <li className="font-semibold mx-2 text-lg cursor-pointer">Profile</li>
+              </Link>
+              <Link to="/blog">
+                <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li>
+              </Link>
             </ul>
           </div>
         </div>

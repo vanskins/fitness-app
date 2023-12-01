@@ -1,5 +1,12 @@
 import RegisterForm from "~/components/RegisterForm"
 
+export const meta = () => {
+  return [
+    { title: "Fitness registration" },
+    { name: "Description", content: "Welcome to Fitness App" }
+  ]
+}
+
 const Register = () => {
   return (
     <div className="flex flex-row h-screen">

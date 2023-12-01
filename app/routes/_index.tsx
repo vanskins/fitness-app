@@ -9,8 +9,15 @@ export const action = async (props: ActionFunctionArgs) => {
   const updates = Object.fromEntries(formData);
   console.log(updates, 'UPDATES')
 
-  return json({ updates });
+  return redirect("/feed")
 };
+
+export const meta = () => {
+  return [
+    { title: "Fitness platform" },
+    { name: "Description", content: "Welcome to Fitness App" }
+  ]
+}
 
 const Index = () => {
   return (
