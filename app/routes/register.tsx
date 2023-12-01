@@ -1,5 +1,23 @@
-import type { MetaFunction } from "@remix-run/node"
 import RegisterForm from "~/components/RegisterForm"
+import { createUser } from "~/utils/user.server"
+import { authenticator } from "~/utils/auth.server"
+
+import type { LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+
+
+export const action = async (props: ActionFunctionArgs) => {
+  const { request } = props;
+  const formData = await request.formData();
+  const updates: any = Object.fromEntries(formData);
+  console.log(updates, 'TEST')
+  await createUser(updates)
+
+  return await authenticator.authenticate("form", request, {
+    successRedirect: "/",
+    failureRedirect: "/register",
+    context: { formData },
+  })
+};
 
 export const meta: MetaFunction = () => {
   return [

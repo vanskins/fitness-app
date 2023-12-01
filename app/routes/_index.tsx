@@ -7,7 +7,6 @@ export const action = async (props: ActionFunctionArgs) => {
   console.log(props)
   const formData = await request.formData();
   const updates = Object.fromEntries(formData);
-  console.log(updates, 'UPDATES')
 
   return redirect("/feed")
 };

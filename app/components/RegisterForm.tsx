@@ -49,7 +49,6 @@ const RegisterForm = () => {
             </div>
             <div className="flex flex-row justify-end">
               <button
-                name="login"
                 className="bg-blue-400 text-white font-medium p-2 rounded-md w-20 m-2"
                 type="submit"
               >
