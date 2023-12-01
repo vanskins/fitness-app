@@ -2,10 +2,10 @@ import { Form, Link } from "@remix-run/react"
 
 const RegisterForm = () => {
   return (
-    <div className="h-screen w-1/2 flex flex-col justify-center items-center">
-      <h1 className="text-4xl font-bold m-10">Become a member</h1>
-      <div className="h-auto w-3/4 p-2 shadow-lg">
-        <Form className="m-10" method="post">
+    <div className="h-screen flex justify-center lg:items-center">
+      <div className="w-full p-10">
+        <h1 className="text-4xl text-center mx-4 font-bold py-4">Become a member</h1>
+        <Form className="p-6 shadow-lg" method="post">
           <div className="">
             <div>
               <label className="block mb-2 font-medium" htmlFor="email">First name</label>

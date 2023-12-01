@@ -3,7 +3,7 @@ import { Form, Link } from "@remix-run/react"
 const LoginForm = () => {
 
   return (
-    <div className="w-2/5 p-5 shadow-lg">
+    <div className="w-full lg:w-2/5 mx-15 p-5 shadow-lg">
       <Form className="" method="post">
         <div className="">
           <div>

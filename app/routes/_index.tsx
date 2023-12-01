@@ -1,6 +1,6 @@
 import LoginForm from '~/components/LoginForm'
 import { json, redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 
 export const action = async (props: ActionFunctionArgs) => {
   const { request } = props;
@@ -12,7 +12,7 @@ export const action = async (props: ActionFunctionArgs) => {
   return redirect("/feed")
 };
 
-export const meta = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "Fitness platform" },
     { name: "Description", content: "Welcome to Fitness App" }

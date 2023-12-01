@@ -1,5 +1,6 @@
+import type { MetaFunction } from "@remix-run/node"
 
-export const meta = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "Fitness feed" },
     { name: "Description", content: "Welcome to Fitness App" }
