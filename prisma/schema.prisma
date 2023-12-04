@@ -19,6 +19,7 @@ model User {
   email       String        @unique
   password    String
   fitnessPlan FitnessPlan[]
+  Post        Post[]
 }
 
 model FitnessPlan {
@@ -28,4 +29,13 @@ model FitnessPlan {
   routinePlan String
   userId      String   @db.ObjectId
   postedBy    User     @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  post      String
+  userId    String   @db.ObjectId
+  postedBy  User     @relation(fields: [userId], references: [id])
 }
