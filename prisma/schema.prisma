@@ -11,11 +11,21 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  firstName String
-  lastName  String
-  email     String   @unique
-  password  String
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  firstName   String
+  lastName    String
+  email       String        @unique
+  password    String
+  fitnessPlan FitnessPlan[]
+}
+
+model FitnessPlan {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  routinePlan String
+  userId      String   @db.ObjectId
+  postedBy    User     @relation(fields: [userId], references: [id])
 }

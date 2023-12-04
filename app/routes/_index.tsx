@@ -8,8 +8,8 @@ export const action = async (props: ActionFunctionArgs) => {
   const formData = await request.formData();
 
   return await authenticator.authenticate("form", request, {
-    successRedirect: "/",
-    failureRedirect: "/register",
+    successRedirect: "/feed",
+    failureRedirect: "/",
     context: { formData },
   })
 };
