@@ -16,7 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     failureRedirect: '/'
   })
   const fitnessPlans = await getAllFitnessPlan()
-  console.log(fitnessPlans, "S")
+
   return { fitnessPlans }
 }
 
