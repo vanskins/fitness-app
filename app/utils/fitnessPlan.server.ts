@@ -21,6 +21,19 @@ export const getMyFitnessPlan = async (userID: string) => {
   }
 };
 
+export const getAllFitnessPlan = async () => {
+  const fitnessPlan = await prisma.fitnessPlan.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    where: {},
+    include: {
+      postedBy: {},
+    },
+  });
+  return fitnessPlan;
+};
+
 export const createFitnessPlan = async ({
   routinePlan,
   postedBy,
