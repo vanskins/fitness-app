@@ -11,7 +11,7 @@ const FeedCard = ({ postedBy, routinePlan, createdAt }: FeedCardProps) => {
     return message.map((i: string, k: number) => {
       const divideTwo = message.length / 2;
       if (i === "") {
-        return <br />
+        return <br key={k} />
       }
       if (k === 0) {
         return (<p className="font-bold text-xl" key={k}>{i}</p>)

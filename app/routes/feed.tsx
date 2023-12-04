@@ -30,7 +30,7 @@ const Feed = () => {
       {
         fitnessPlans.map((i: any, k: number) => {
           return (
-            <FeedCard postedBy={i.postedBy} routinePlan={i.routinePlan} createdAt={i.createdAt} />
+            <FeedCard key={k} postedBy={i.postedBy} routinePlan={i.routinePlan} createdAt={i.createdAt} />
           )
         })
       }

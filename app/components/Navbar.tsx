@@ -28,9 +28,6 @@ const Navbar = ({ userSession }: NavbarProps) => {
                 <Link to="/profile">
                   <li className="font-semibold mx-2 text-lg cursor-pointer">Profile</li>
                 </Link>
-                <Link to="/blog">
-                  <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li>
-                </Link>
                 <Form className="" method="post">
                   <button type="submit">
                     <li

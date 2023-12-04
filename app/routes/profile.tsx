@@ -1,10 +1,11 @@
+import { useState, useEffect } from "react"
+import { useNavigation } from "@remix-run/react"
 import { json } from "@remix-run/node";
 import { authenticator } from "~/utils/auth.server";
 import { createFitnessPlan, getMyFitnessPlan } from "~/utils/fitnessPlan.server"
 import { createPost, getMyPosts } from "~/utils/post.server"
 import StatusCard from "~/components/StatusCard";
 import OpenAI from "openai";
-import moment from "moment";
 
 import type { MetaFunction, LoaderFunction, ActionFunctionArgs } from "@remix-run/node"
 import { useLoaderData, Form } from "@remix-run/react";
@@ -20,9 +21,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const intent = formData.get("intent");
   const user = await authenticator.isAuthenticated(request, { failureRedirect: '/' })
-
+  console.log(intent, "TEST")
   switch (intent) {
     case "generateRoutine": {
+      console.log("generateroutine")
       const { age, gender, fitnessGoal, bodyType, hasActiveLifestyle, minutes, preferredPlace } = Object.fromEntries(formData);
       const fitnessPrompt = `
     Create a workout plan for me, I have ${minutes} minutes free time per day. My details are
@@ -40,6 +42,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           { "role": "user", "content": fitnessPrompt }
         ]
       })
+      console.log(chatCompletion)
       const result = chatCompletion.choices[0].message.content;
 
       if (result) {
@@ -52,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
           }
         })
 
-        return fitnessPlan
+        return json({ fitnessPlan })
       }
       return ''
     }
@@ -67,7 +70,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             }
           }
         })
-        return createNewPost
+        return json({ createNewPost })
       }
       return ''
     }
@@ -85,13 +88,32 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (user) {
     const fitnessPlan = await getMyFitnessPlan(user.id);
     const myPost = await getMyPosts(user.id)
-    return { fitnessPlan, user, myPost }
+    return json({ fitnessPlan, user, myPost })
   }
-  return { fitnessPlan: null, user, myPost: null }
+  return json({ fitnessPlan: null, user, myPost: null })
 }
 
 const Profile = () => {
   const { user, fitnessPlan, myPost } = useLoaderData<typeof loader>();
+  const [isCreatingPost, setIsCreatingPost] = useState<boolean>(false)
+  const [isGeneratingWorkout, setIsGeneratingWorkout] = useState<boolean>(false)
+  const [post, setPost] = useState<string>("");
+  const navigation = useNavigation();
+  const isCreating = Boolean(
+    navigation.state === "submitting"
+  );
+
+  useEffect(() => {
+    if (navigation.state === "idle") {
+      console.log("I was run")
+      setIsCreatingPost(false)
+      setIsGeneratingWorkout(false)
+      setPost("")
+    }
+  }, [navigation.state])
+
+
+  // console.log(navigation.state, navigation)
 
   let message = [];
   if (fitnessPlan && fitnessPlan.length > 0) {
@@ -106,7 +128,7 @@ const Profile = () => {
       <br />
       {
         message.length === 0 &&
-        <Form className="" method="post">
+        <Form className="" name="generateRoutine" method="post">
           <div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="age">Age</label>
@@ -114,20 +136,21 @@ const Profile = () => {
                 className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300"
                 aria-label="age"
                 name="age"
+                disabled={isGeneratingWorkout}
                 type="number"
                 placeholder="How old are you?"
               />
             </div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="gender">Gender</label>
-              <select className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="gender" id="cars">
+              <select disabled={isGeneratingWorkout} className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="gender" id="cars">
                 <option value="male">Male</option>
                 <option value="female">Female</option>
               </select>
             </div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="fitness goal">Fitness goal</label>
-              <select className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="fitnessGoal" id="cars">
+              <select disabled={isGeneratingWorkout} className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="fitnessGoal" id="cars">
                 <option value="be lean">To be lean</option>
                 <option value="be fit">To bulk up</option>
                 <option value="lose weight">To lose weight</option>
@@ -135,7 +158,7 @@ const Profile = () => {
             </div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="email">Body type</label>
-              <select className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="bodyType" id="cars">
+              <select disabled={isGeneratingWorkout} className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="bodyType" id="cars">
                 <option value="underweight">Under weight</option>
                 <option value="fit">Fit</option>
                 <option value="overweight">Over weight</option>
@@ -143,7 +166,7 @@ const Profile = () => {
             </div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="email">Has an active lifestyle?</label>
-              <select className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="hasActiveLifestyle" id="cars">
+              <select disabled={isGeneratingWorkout} className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="hasActiveLifestyle" id="cars">
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
@@ -151,6 +174,7 @@ const Profile = () => {
             <div>
               <label className="block mb-2 font-medium" htmlFor="email">Minutes per day you can allocate?</label>
               <input
+                disabled={isGeneratingWorkout}
                 className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300"
                 aria-label="minutes"
                 name="minutes"
@@ -160,7 +184,7 @@ const Profile = () => {
             </div>
             <div>
               <label className="block mb-2 font-medium" htmlFor="email">Preffered place to workout</label>
-              <select className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="preferredPlace" id="cars">
+              <select disabled={isGeneratingWorkout} className="w-full p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300" name="preferredPlace" id="cars">
                 <option value="home">Home</option>
                 <option value="gym">Gym</option>
                 <option value="outdoor">Outdoor</option>
@@ -170,21 +194,23 @@ const Profile = () => {
           <button
             name="intent"
             value="generateRoutine"
-            className="bg-blue-400 p-4 rounded-xl text-white font-bold"
+            className={`${isGeneratingWorkout ? "bg-gray-600" : "bg-blue-400"} p-4 rounded-xl text-white font-bold`}
             type="submit"
+            // onClick={() => setIsGeneratingWorkout(true)}
+            disabled={isGeneratingWorkout}
           >
-            Generate workout routine
+            {isGeneratingWorkout ? "Generating workout routine ..." : "Generate workout routine"}
           </button>
         </Form>
       }
       <br />
-      <div className="flex flex-row">
+      <div className="h-screen flex flex-row">
         <div className="flex-1">
           {
             message.length > 0 &&
             message.map((i: string, k: number) => {
               if (i === "") {
-                return <br />
+                return <br key={k} />
               }
               if (k === 0 || k === message.length - 1) {
                 return (<p className="font-bold text-xl" key={k}>{i}</p>)
@@ -196,44 +222,51 @@ const Profile = () => {
             })
           }
         </div>
-        <div className="flex flex-col flex-1 w-full">
-          <Form className="shadow-lg p-6 w-full mx-10 h-2/5 rounded-xl" method="post">
-            <div>
-              <h2 className="font-bold text-4xl mt-6">How's your day?</h2>
+        {
+          message.length > 0 &&
+          <div className="h-screen flex flex-col flex-1 w-full">
+            <Form name="createPost" className="shadow-lg p-6 w-full mx-10 h-2/5 rounded-xl" method="post">
               <div>
-                <textarea
-                  className="resize-none w-full mt-4 p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300"
-                  aria-label="status"
-                  name="status"
-                  rows={5}
-                  typeof="string"
-                  placeholder="How's your day?"
-                />
-              </div>
-              <button
-                name="intent"
-                value="postStatus"
-                className="bg-green-400 p-4 rounded-xl text-white font-bold"
-                type="submit"
-              >
-                Post
-              </button>
-            </div>
-          </Form>
-          <div>
-            {
-              myPost && myPost.map((i: any, k: number) => {
-                return (
-                  <StatusCard
-                    postedBy={i.postedBy}
-                    post={i.post}
-                    createdAt={i.createdAt}
+                <h2 className="font-bold text-4xl mt-6">How's your day?</h2>
+                <div>
+                  <textarea
+                    className="resize-none w-full mt-4 p-2 mb-6 border-2 rounded-lg border-gray-400 outline-none focus:border-blue-300"
+                    aria-label="status"
+                    name="status"
+                    rows={5}
+                    typeof="string"
+                    value={post}
+                    onChange={(e) => setPost(e.target.value)}
+                    placeholder="How's your day?"
                   />
-                )
-              })
-            }
+                </div>
+                <button
+                  name="intent"
+                  value="postStatus"
+                  className="bg-green-400 p-4 rounded-xl text-white font-bold"
+                  type="submit"
+                  onClick={() => setIsCreatingPost(true)}
+                >
+                  {isCreatingPost ? "Creating a post ..." : "Post"}
+                </button>
+              </div>
+            </Form>
+            <div>
+              {
+                myPost && myPost.map((i: any, k: number) => {
+                  return (
+                    <StatusCard
+                      key={k}
+                      postedBy={i.postedBy}
+                      post={i.post}
+                      createdAt={i.createdAt}
+                    />
+                  )
+                })
+              }
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   )
