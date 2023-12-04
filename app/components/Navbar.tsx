@@ -1,7 +1,19 @@
 
-import { Form, Link } from "@remix-run/react"
+import { Link, Form } from "@remix-run/react"
 
-const Navbar = () => {
+type NavbarProps = {
+  userSession: userTypes | null;
+}
+
+type userTypes = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+};
+
+
+const Navbar = ({ userSession }: NavbarProps) => {
   return (
     <nav className="flex p-4 justify-center">
       <div className="w-full">
@@ -10,14 +22,26 @@ const Navbar = () => {
             <h1 className="cursor-pointer font-bold text-2xl">FITNESS PLATFORM</h1>
           </Link>
           <div>
-            <ul className="flex flex-row">
-              <Link to="/profile">
-                <li className="font-semibold mx-2 text-lg cursor-pointer">Profile</li>
-              </Link>
-              <Link to="/blog">
-                <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li>
-              </Link>
-            </ul>
+            {
+              userSession &&
+              <ul className="flex flex-row">
+                <Link to="/profile">
+                  <li className="font-semibold mx-2 text-lg cursor-pointer">Profile</li>
+                </Link>
+                <Link to="/blog">
+                  <li className="font-semibold mx-2 text-lg cursor-pointer">Blog</li>
+                </Link>
+                <Form className="" method="post">
+                  <button type="submit">
+                    <li
+                      className="font-semibold mx-2 text-lg cursor-pointer"
+                    >
+                      Logout
+                    </li>
+                  </button>
+                </Form>
+              </ul>
+            }
           </div>
         </div>
       </div>

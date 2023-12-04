@@ -1,14 +1,17 @@
 import LoginForm from '~/components/LoginForm'
 import { json, redirect } from "@remix-run/node";
-import type { LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, LoaderFunction, ActionFunctionArgs, MetaFunction } from "@remix-run/node";
+import { authenticator } from "~/utils/auth.server";
 
 export const action = async (props: ActionFunctionArgs) => {
   const { request } = props;
-  console.log(props)
   const formData = await request.formData();
-  const updates = Object.fromEntries(formData);
 
-  return redirect("/feed")
+  return await authenticator.authenticate("form", request, {
+    successRedirect: "/",
+    failureRedirect: "/register",
+    context: { formData },
+  })
 };
 
 export const meta: MetaFunction = () => {
@@ -16,6 +19,13 @@ export const meta: MetaFunction = () => {
     { title: "Fitness platform" },
     { name: "Description", content: "Welcome to Fitness App" }
   ]
+}
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const user = await authenticator.isAuthenticated(request, {
+    successRedirect: "/feed",
+  })
+  return user
 }
 
 const Index = () => {

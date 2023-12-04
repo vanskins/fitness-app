@@ -8,9 +8,9 @@ import type { LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from "@remi
 export const action = async (props: ActionFunctionArgs) => {
   const { request } = props;
   const formData = await request.formData();
-  const updates: any = Object.fromEntries(formData);
-  console.log(updates, 'TEST')
-  await createUser(updates)
+  const newUser: any = Object.fromEntries(formData);
+
+  await createUser(newUser)
 
   return await authenticator.authenticate("form", request, {
     successRedirect: "/",
