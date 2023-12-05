@@ -21,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const intent = formData.get("intent");
   const user = await authenticator.isAuthenticated(request, { failureRedirect: '/' })
-  console.log(intent, "TEST")
+
   switch (intent) {
     case "generateRoutine": {
       console.log("generateroutine")
@@ -105,9 +105,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (navigation.state === "idle") {
-      console.log("I was run")
       setIsCreatingPost(false)
-      setIsGeneratingWorkout(false)
       setPost("")
     }
   }, [navigation.state])

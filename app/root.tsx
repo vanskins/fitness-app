@@ -7,7 +7,8 @@ import {
   Scripts,
   LiveReload,
   ScrollRestoration,
-  useLoaderData
+  useLoaderData,
+  useNavigation
 } from "@remix-run/react";
 import stylesheet from "./global.css";
 import Navbar from "~/components/Navbar";
@@ -29,6 +30,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function App() {
   const user = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
 
   return (
     <html>
@@ -43,7 +45,13 @@ export default function App() {
       <body>
         <div className="container mx-auto">
           <Navbar userSession={user} />
-          <Outlet />
+          <div
+            className={
+              navigation.state === "loading" || navigation.state === "submitting" ? "loading" : ""
+            }
+          >
+            <Outlet />
+          </div>
         </div>
         <Scripts />
         <ScrollRestoration />
