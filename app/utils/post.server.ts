@@ -17,6 +17,11 @@ export const getMyPosts = async (userID: string) => {
       },
       include: {
         postedBy: {},
+        Comments: {
+          include: {
+            commentedBy: {},
+          },
+        },
       },
     });
     return myPost;

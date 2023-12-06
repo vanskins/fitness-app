@@ -4,6 +4,7 @@ import { json } from "@remix-run/node";
 import { authenticator } from "~/utils/auth.server";
 import { createFitnessPlan, getMyFitnessPlan } from "~/utils/fitnessPlan.server"
 import { createPost, getMyPosts } from "~/utils/post.server"
+import { createComment } from "~/utils/comments.server";
 import StatusCard from "~/components/StatusCard";
 import OpenAI from "openai";
 
@@ -74,6 +75,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       }
       return ''
     }
+    case "postComment": {
+      const comment = formData.get("comment");
+      const postId = formData.get("postId");
+
+      if (comment && postId) {
+        const createNewComment = await createComment({
+          comment: comment.toString(),
+          commentedBy: {
+            connect: {
+              id: user.id
+            }
+          },
+          post: {
+            connect: {
+              id: postId
+            }
+          }
+        })
+        return json({ createNewComment })
+      }
+      return ''
+    }
     default: {
       throw new Error("Unexpected action");
     }
@@ -88,6 +111,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (user) {
     const fitnessPlan = await getMyFitnessPlan(user.id);
     const myPost = await getMyPosts(user.id)
+    console.log(myPost, "TEST")
     return json({ fitnessPlan, user, myPost })
   }
   return json({ fitnessPlan: null, user, myPost: null })
@@ -202,7 +226,7 @@ const Profile = () => {
         </Form>
       }
       <br />
-      <div className="h-screen flex flex-row">
+      <div className="flex flex-row">
         <div className="flex-1">
           {
             message.length > 0 &&
@@ -222,7 +246,7 @@ const Profile = () => {
         </div>
         {
           message.length > 0 &&
-          <div className="h-screen flex flex-col flex-1 w-full">
+          <div className="flex flex-col flex-1 w-full">
             <Form name="createPost" className="shadow-lg p-6 w-full mx-10 h-2/5 rounded-xl" method="post">
               <div>
                 <h2 className="font-bold text-4xl mt-6">How's your day?</h2>
@@ -258,6 +282,8 @@ const Profile = () => {
                       postedBy={i.postedBy}
                       post={i.post}
                       createdAt={i.createdAt}
+                      postId={i.id}
+                      comments={i.Comments}
                     />
                   )
                 })
